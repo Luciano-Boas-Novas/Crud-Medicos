@@ -15,17 +15,17 @@
                         </div><!-- search-bar -->
 
                         <div class="form-fields">
-                           <input type="text" v-model="nome" placeholder="Nome completo" />
-                           <input type="text" v-model="crm" placeholder="CRM" />
-                           <input type="text" v-model="especialidade" placeholder="Especialidade" />
-                           <input type="tel" v-model="telefone" placeholder="Telefone" />
-                           <input type="email" v-model="email" placeholder="Email" />
-                            
-                        </div><!-- form-fields Campos do formulário médico -->
-
+                        <input type="text" v-model="nome" placeholder="Nome completo" />
+                        <input type="text" v-model="crm" placeholder="CRM" />
+                        <input type="text" v-model="especialidade" placeholder="Especialidade" />
+                        <input type="tel" v-model="telefone" placeholder="Telefone" />
+                        <input type="email" v-model="email" placeholder="Email" />
+                         </div><!-- form-fields Campos do formulário médico -->
+                       
                         <div class="form-actions">
-                            
-                        </div><!-- form-actions Botões de ação (Salvar, Cancelar, etc.) -->
+                            <button @click="salvar">Salvar</button>
+                            <button @click="cancelar">Cancelar</button>     
+                        </div><!-- form-actions -->
                     </div><!-- form-wrapper -->
                 </div><!-- doctor-content -->
             </div><!-- crud-box -->
@@ -45,13 +45,13 @@
 
 .crud-box {
     margin-top: 200px;
-    display: flex;
-    background-color: aliceblue;
-    height: 1400px;
-    width: 1600px;
-    margin-bottom: 900px;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  background-color: aliceblue;
+  height: 1400px;
+  width: 1600px;
+  margin-bottom: 900px;
+  justify-content: center;
+  align-items: center;
 }
 
 .doctor-content {
@@ -65,32 +65,65 @@
 
 .form-wrapper {
     display: flex;
-    flex-direction: column;
-    background-color: aliceblue;
-    width: 80%;
-    height: 90%;
-    border-radius: 17px;
-    justify-content: space-between;
-    align-items: center;
+  flex-direction: column;
+  background-color: white;
+  width: 60%;
+  height: 80%;
+  border-radius: 17px;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
 }
 
 .form-header {
     display: flex;
-    background-color: black;
-    width: 80%;
-    height: 13%;
-    justify-content: center;
-    align-items: center;
+  background-color: black;
+  width: 100%;
+  height: 13%;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
 }
 
 
-.form-actions {
+/* .form-actions {
     display: flex;
     background-color: black;
     width: 60%;
     height: 5%;
     align-items: center;
     justify-content: center;
+
+
+} */
+.form-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  width: 80%;
+}
+.form-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  width: 80%;
+}
+
+.form-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+  background-color: #0077cc;
+  transition: background-color 0.3s ease;
+}
+.form-fields input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
 }
 .search-bar{
     display: flex;
@@ -113,6 +146,18 @@
     gap: 10px;
     border-radius: 17px;
 }
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 80%;
+}
+
+
+.form-actions button:hover {
+  background-color: #005fa3;
+}
+
 
 h1 {
     color: antiquewhite;
@@ -121,11 +166,19 @@ h1 {
 </style>
 
 <script setup>
-import { ref } from 'vue'
-
-
+import { ref, onMounted } from 'vue'
 
 const titleMedico = ref("Cadastro Médico")
 
 
+const nome = ref('')
+const crm = ref('')
+const especialidade = ref('')
+const telefone = ref('')
+const email = ref('')
+
+
+
+
 </script>
+
