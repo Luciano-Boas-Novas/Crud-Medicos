@@ -18,7 +18,10 @@
                          </div>
 
                         <div class="search-bar">
-                            
+                         
+        <!-- Campo para digitar o CRM ou índice -->
+      
+
                         </div><!-- search-bar -->
 
                         <div  class="form-fields">
@@ -37,7 +40,7 @@
                             <h2>Gerenciar Médicos</h2>
                             <button @click="exibirCadastro">Cadastrar Médico</button>
                             <button :class="OcultoForm"@click="listarMedicos">Listar Médicos</button>
-                            <button @click="editarMedico">Editar Médico</button>
+                            <button  @click="editarMedico(index)">Editar Médico</button>
                             <button @click="excluirMedico">Excluir Médico</button>
                         </div><!--opçoes de usuario-->
                         <div v-else-if="modoAtual === 'listagem'" class="list-content">
@@ -53,17 +56,17 @@
                           </div> <!-- Fim da form-voltar -->
                           <!-- Lista dos médicos -->
                           <div class="list-scroll">
-                            <div
-                              v-for="(medico, index) in medicos"
-                              :key="index"
-                              class="medico-card"
-                            >
-                              <p>Nome: {{ medico.nome }}</p>
-                              <p>CRM: {{ medico.crm }}</p>
-                              <p>Especialidade: {{ medico.especialidade }}</p>
-                              <p>Telefone: {{ medico.telefone }}</p>
-                              <p>Email: {{ medico.email }}</p>
-                            </div>
+                            <div v-for="(medico, index) in medicos" :key="index" class="medico-card">
+                                <p>Nome: {{ medico.nome }}</p>
+                                <p>CRM: {{ medico.crm }}</p>
+                                <p>Especialidade: {{ medico.especialidade }}</p>
+                                <p>Telefone: {{ medico.telefone }}</p>
+                                <p>Email: {{ medico.email }}</p>
+                                <div class="buttons-actions">
+                                <button class="btn-editar" @click="editarMedico(index)">Editar</button> <!-- Correção aqui -->
+                                </div>
+                              </div>
+
                           </div> <!-- Fim da list-scroll -->
                         </div> <!-- Fim da list-content -->
             
@@ -163,13 +166,20 @@
 }
 
 .form-actions button {
-  height: 60%;
-  width: 60%;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  color: white;
-  background-color: #1c8c42;
+ 
+font-size: 16px;
+cursor: pointer;
+width: 80%;
+height: 80%;
+padding: 10px 20px;
+border: 5px solid ;
+
+border-radius: 7px;
+box-shadow: 1px 1px 4px rgb(10, 4, 4);
+background-color: #1c8c42;
+position: relative; 
+
+color: rgb(255, 255, 255);
   transition: background-color 0.3s ease;
 }
 .opcoes-usuario {
@@ -330,20 +340,54 @@ h1 {
   border-radius: 10px;
 }
 
+.buttons-actions{
+
+  display: flex;
+
+  padding: 10px 20px;
+  justify-content: center;
+  align-items: center;
+
+}
+.btn-editar{
+
+  width: 80%;
+height: 80%;
+padding: 10px 20px;
+border: 5px solid ;
+cursor: pointer;
+border-radius: 7px;
+box-shadow: 1px 1px 4px rgb(10, 4, 4);
+background-color: #1c8c42;
+position: relative; 
+
+color: rgb(255, 255, 255);
+
+}
 
 </style>
 
 <script setup>
 import { ref,  onMounted} from 'vue'
 
+const modoAtual = ref('menu');
+const titleMedico = ref("Cadastro Médico");
+const indiceEdicao = ref(null);
+const medicos = ref([
+  { nome: "Dr. João", crm: "123", especialidade: "Cardiologia", telefone: "99999-9999", email: "joao@example.com" },
+  { nome: "Dra. Maria", crm: "124", especialidade: "Neurologia", telefone: "88888-8888", email: "maria@example.com" },
+  
+]);
 
-const modoAtual = ref('menu')
-const titleMedico = ref("Cadastro Médico")
 
-function exibirCadastro(){
-  titleMedico.value = "Cadastro Médico"
-   modoAtual.value = 'cadastro'
-}
+const nome = ref('')
+const crm = ref('')
+const especialidade = ref('')
+const telefone = ref('')
+const email = ref('')
+
+
+
 
 function limparCampos() {
   nome.value = ''
@@ -353,13 +397,10 @@ function limparCampos() {
   email.value = ''
 }
 
-const medicos = ref([])
 
-const nome = ref('')
-const crm = ref('')
-const especialidade = ref('')
-const telefone = ref('')
-const email = ref('')
+function exibirCadastro(){
+  modoAtual.value = 'cadastro'
+}
 
 function voltarFormInicial(){
     modoAtual.value = 'menu'
@@ -368,29 +409,53 @@ function voltarFormInicial(){
 }
 
 
+
 function cancelar(){
   limparCampos()
 }
-function salvar(){
-
+function salvar() {
+  if (indiceEdicao.value !== null) {
+   
+    medicos.value[indiceEdicao.value] ={
+      nome: nome.value,
+      crm: crm.value,
+      especialidade: especialidade.value,
+      telefone: telefone.value,
+      email: email.value
+    };
+  }
+  else {
     medicos.value.push({
-        nome: nome.value,
-        crm: crm.value,
-        especialidade: especialidade.value,
-        telefone: telefone.value,
-        email: email.value
-        
-        
-    })
-    limparCampos()
-
- 
+      nome: nome.value,
+      crm: crm.value,
+      especialidade: especialidade.value,
+      telefone: telefone.value,
+      email: email.value
+    });
+  }
+  limparCampos();
+  modoAtual.value = 'menu';  
 }
+
+
 
 function listarMedicos(){
   modoAtual.value = 'listagem'
 
 
+}
+function editarMedico(index) {
+  modoAtual.value = 'listagem';  
+  const medico = medicos.value[index];
+  
+  nome.value = medico.nome;
+  crm.value = medico.crm;
+  especialidade.value = medico.especialidade;
+  telefone.value = medico.telefone;
+  email.value = medico.email;
+  indiceEdicao.value = index;  
+  titleMedico.value = 'Editar Médico';  
+  
 }
 
 
