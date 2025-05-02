@@ -3,8 +3,8 @@
         <div class="crud-container">
             <div class="crud-box">
                 <div class="doctor-content">
-                    <div  class="form-wrapper">
-                        <div v-if="valorFalso" class="form-content">
+                    <div  class="form-wrapper" v-if="modoAtual === 'cadastro' || modoAtual === 'menu' || modoAtual === 'listagem'">
+                        <div v-if="modoAtual === 'cadastro'" class="form-content">
                             
 
                         <div class="form-header">
@@ -33,24 +33,45 @@
                             <button v-on:click="cancelar">Cancelar</button>     
                         </div><!-- form-actions -->
                         </div><!--form-content-->
-                        <div v-else class="opcoes-usuario">
+                        <div v-if="modoAtual === 'menu'" class="opcoes-usuario">
                             <h2>Gerenciar Médicos</h2>
                             <button @click="exibirCadastro">Cadastrar Médico</button>
-                            <button @click="listarMedicos">Listar Médicos</button>
+                            <button :class="OcultoForm"@click="listarMedicos">Listar Médicos</button>
                             <button @click="editarMedico">Editar Médico</button>
                             <button @click="excluirMedico">Excluir Médico</button>
                         </div><!--opçoes de usuario-->
+                        <div v-else-if="modoAtual === 'listagem'" class="list-content">
+                          <!-- Cabeçalho da listagem de médicos -->
+                          <div class="form-header">
+                            <h1>Lista de Médicos</h1>
+                          </div> <!-- Fim da form-header -->
+                          <!-- Botão para voltar ao menu inicial -->
+                          <div class="form-voltar">
+                            <button @click="voltarFormInicial" class="btn-voltar">
+                              Voltar
+                            </button>
+                          </div> <!-- Fim da form-voltar -->
+                          <!-- Lista dos médicos -->
+                          <div class="list-scroll">
+                            <div
+                              v-for="(medico, index) in medicos"
+                              :key="index"
+                              class="medico-card"
+                            >
+                              <p>Nome: {{ medico.nome }}</p>
+                              <p>CRM: {{ medico.crm }}</p>
+                              <p>Especialidade: {{ medico.especialidade }}</p>
+                              <p>Telefone: {{ medico.telefone }}</p>
+                              <p>Email: {{ medico.email }}</p>
+                            </div>
+                          </div> <!-- Fim da list-scroll -->
+                        </div> <!-- Fim da list-content -->
+            
                         
                     </div><!-- form-wrapper -->
                 </div><!-- doctor-content -->
 
-                <div class="list-medicos" v-if="valorFalso">
-                    <div class="list-content">
-
-
-                    </div><!--form-content-->
-                       
-                </div><!--list-medicos-->
+              
             </div><!-- crud-box -->
         
         </div> <!-- crud-container -->
@@ -104,7 +125,7 @@
 
 .form-header {
     display: flex;
-  background-color: black;
+  background-color: #1c8c42;
   width: 100%;
   height: 13%;
   justify-content: center;
@@ -148,7 +169,7 @@
   font-size: 16px;
   cursor: pointer;
   color: white;
-  background-color: #0077cc;
+  background-color: #1c8c42;
   transition: background-color 0.3s ease;
 }
 .opcoes-usuario {
@@ -156,7 +177,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #001f3f;
+  
+  background-color: #1c8c42;
   color: white;
   padding: 40px;
   border-radius: 20px;
@@ -175,13 +197,13 @@
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  background-color: #0074d9;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
   transition: background-color 0.3s;
 }
 
 .opcoes-usuario button:hover {
-  background-color: #005fa3;
+  background-color: #00a33e;
 }
 
 .form-fields input {
@@ -192,7 +214,7 @@
 }
 .search-bar{
     display: flex;
-    background-color: black;
+    background-color: rgb(0, 0, 0);
     width: 80%;
     height: 7%;
     align-items: center;
@@ -202,7 +224,7 @@
 
 .form-fields{
     display: flex;
-    background-color: black;
+    background-color: rgb(255, 255, 255);
     width: 80%;
     height: 70%;
     flex-direction: column;
@@ -221,7 +243,7 @@
 .form-content{
 
     display: flex;
-    background-color: black;
+    background-color: rgb(0, 0, 0);
     width: 80%;
     height: 70%;
     flex-direction: column;
@@ -234,7 +256,7 @@
 }
 
 .form-actions button:hover {
-  background-color: #005fa3;
+  background-color: #00e990;
 }
 
 
@@ -284,23 +306,51 @@ h1 {
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  background-color: #0074d9;
+  background-color: #1c8c42;
   color: white;
   transition: background-color 0.3s;
+}
+
+.medico-card {
+  background-color: white;
+  color: black;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
+
+.list-scroll {
+  overflow-y: auto;
+  max-height: 400px;
+  width: 90%;
+  padding: 10px;
+  background-color: #000000;
+  border-radius: 10px;
 }
 
 
 </style>
 
 <script setup>
-import { ref,  onUnmounted} from 'vue'
+import { ref,  onMounted} from 'vue'
 
 
-const valorFalso = ref(false)
+const modoAtual = ref('menu')
 const titleMedico = ref("Cadastro Médico")
 
 function exibirCadastro(){
-   valorFalso.value = !valorFalso.value
+  titleMedico.value = "Cadastro Médico"
+   modoAtual.value = 'cadastro'
+}
+
+function limparCampos() {
+  nome.value = ''
+  crm.value = ''
+  especialidade.value = ''
+  telefone.value = ''
+  email.value = ''
 }
 
 const medicos = ref([])
@@ -312,12 +362,19 @@ const telefone = ref('')
 const email = ref('')
 
 function voltarFormInicial(){
-    valorFalso.value = !valorFalso.value
+    modoAtual.value = 'menu'
+    limparCampos()
+
+}
+
+
+function cancelar(){
+  limparCampos()
 }
 function salvar(){
 
     medicos.value.push({
-        nome: nome,
+        nome: nome.value,
         crm: crm.value,
         especialidade: especialidade.value,
         telefone: telefone.value,
@@ -325,16 +382,18 @@ function salvar(){
         
         
     })
+    limparCampos()
+
+ 
+}
+
+function listarMedicos(){
+  modoAtual.value = 'listagem'
 
 
 }
-onUnmounted(() => {
-    nome.value = ''
-    crm.value = ''
-    especialidade.value =''
-    telefone.value = ''
-    email.value = ''
-})
+
+
 
 
 
