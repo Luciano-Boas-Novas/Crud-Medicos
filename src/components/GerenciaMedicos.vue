@@ -1,6 +1,9 @@
 '
 <template>
   <section>
+    <div class="title-app">
+      <h1>Apicação Cadastro CRUD</h1>
+    </div>
     <div class="crud-container">
       <div class="crud-box">
         <div class="doctor-content">
@@ -30,7 +33,10 @@
                   v-model="especialidade"
                   placeholder="Especialidade"
                 />
-                <input type="text" v-model="status" placeholder="Status" />
+                <select v-model="status">
+                  <option value="ativo">Ativo</option>
+                  <option value="inativo">Inativo</option>
+                </select>
                 <input type="email" v-model="email" placeholder="Email" />
               </div>
               <!-- form-fields Campos do formulário médico -->
@@ -121,9 +127,9 @@
 <style scoped>
 .crud-container {
   display: flex;
-  background-color: black;
   width: 198vh;
   height: 200vh;
+  background-color: #b3b5b7;
   justify-content: center;
   align-items: flex-start;
 }
@@ -131,7 +137,6 @@
 .crud-box {
   margin-top: 200px;
   display: flex;
-  background-color: aliceblue;
   height: 1400px;
   width: 1600px;
   margin-bottom: 900px;
@@ -141,11 +146,10 @@
 
 .doctor-content {
   display: flex;
-  background-color: cadetblue;
   width: 1200px;
-  height: 1000px;
+  height: 1600px;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .form-wrapper {
@@ -153,7 +157,7 @@
   flex-direction: column;
   background-color: white;
   width: 60%;
-  height: 80%;
+  height: 60%;
   border-radius: 17px;
   justify-content: space-around;
   align-items: center;
@@ -216,9 +220,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 300px;
-  height: 400px;
+  justify-content: space-evenly;
+  width: 514px;
+  height: 598px;
   background-color: #1c8c42;
   color: white;
   padding: 40px;
@@ -244,15 +248,20 @@
   border: 4px solid;
   border-radius: 6px;
   box-shadow: 1px 1px 4px rgb(10, 4, 4);
-  background-color: #02cb46;
+  /* background-color: #02cb46; */
   position: relative;
-  color: rgb(255, 255, 255);
+  color: rgb(6 6 6);
   transition: background-color 0.3s ease;
 }
 .opcoes-usuario button:hover {
   background-color: #00a33e;
 }
-
+.form-fields select {
+  width: 217px;
+  height: 40px;
+  border: solid 1px #000000;
+  border-radius: 7px;
+}
 .form-fields input {
   padding: 10px;
   border-radius: 6px;
@@ -391,6 +400,21 @@ h1 {
 
   color: rgb(255, 255, 255);
 }
+
+.title-app {
+  display: flex;
+  width: 198vh;
+  height: 284px;
+
+  color: #ffe;
+  justify-content: center;
+  align-items: center;
+  background-color: #b3b5b7;
+}
+.title-app h1 {
+  font-size: 40px;
+  color: #ffffff;
+}
 </style>
 
 <script setup>
@@ -443,8 +467,6 @@ function excluirMedico(index) {
   modoAtual.value = 'listagem';
 
   medicos.value.splice(index, 1);
-
-  modoAtual.value = 'listagem';
 }
 
 function cancelar() {
@@ -476,7 +498,11 @@ function listarMedicos() {
   modoAtual.value = 'listagem';
 }
 function editarMedico(index) {
-  modoAtual.value = 'listagem';
+  if (modoAtual.value === 'menu') {
+    modoAtual.value = 'listagem';
+  } else {
+    modoAtual.value = 'cadastro';
+  }
   const medico = medicos.value[index];
   nome.value = medico.nome;
   crm.value = medico.crm;
