@@ -157,7 +157,7 @@
   flex-direction: column;
   background-color: white;
   width: 60%;
-  height: 60%;
+  height: 37%;
   border-radius: 17px;
   justify-content: space-around;
   align-items: center;
