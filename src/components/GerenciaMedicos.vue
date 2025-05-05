@@ -156,8 +156,8 @@
   display: flex;
   flex-direction: column;
   background-color: white;
-  width: 60%;
   height: 37%;
+  width: 60%;
   border-radius: 17px;
   justify-content: space-around;
   align-items: center;
