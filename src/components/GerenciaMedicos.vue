@@ -14,7 +14,7 @@
 
                         </div>
                         <div class="form-voltar">
-                            <button @click="voltarFormInicial"class="btn-voltar">voltar</button>
+                            <button @click="voltarFormInicial"class="btn-voltar">voltar</button>  
                          </div>
 
                         <div class="search-bar">
@@ -39,7 +39,7 @@
                         <div v-if="modoAtual === 'menu'" class="opcoes-usuario">
                             <h2>Gerenciar Médicos</h2>
                             <button @click="exibirCadastro">Cadastrar Médico</button>
-                            <button :class="OcultoForm"@click="listarMedicos">Listar Médicos</button>
+                            <button @click="listarMedicos">Listar Médicos</button>
                             <button  @click="editarMedico(index)">Editar Médico</button>
                             <button @click="excluirMedico">Excluir Médico</button>
                         </div><!--opçoes de usuario-->
@@ -64,6 +64,7 @@
                                 <p>Email: {{ medico.email }}</p>
                                 <div class="buttons-actions">
                                 <button class="btn-editar" @click="editarMedico(index)">Editar</button> <!-- Correção aqui -->
+                                <button class="btn-editar" @click="excluirMedico(index)">Excluir</button> <!-- Correção aqui -->
                                 </div>
                               </div>
 
@@ -187,7 +188,8 @@ color: rgb(255, 255, 255);
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+  width: 300px;
+  height: 400px;
   background-color: #1c8c42;
   color: white;
   padding: 40px;
@@ -198,20 +200,29 @@ color: rgb(255, 255, 255);
 
 .opcoes-usuario h2 {
   font-size: 24px;
+ 
   color: #ffe;
 }
 
-.opcoes-usuario button {
-  padding: 12px 30px;
-  font-size: 18px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  background-color: #ffffff;
-  color: rgb(0, 0, 0);
-  transition: background-color 0.3s;
-}
 
+.opcoes-usuario button {
+    
+    display: flex;
+    font-size: 16px;
+    cursor: pointer;
+    width: 64%;
+    width: 37%;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 14px;
+    border: 4px solid;
+    border-radius: 6px;
+    box-shadow: 1px 1px 4px rgb(10, 4, 4);
+    background-color: #1c8c42;
+    position: relative;
+    color: rgb(255, 255, 255);
+    transition: background-color 0.3s ease;
+}
 .opcoes-usuario button:hover {
   background-color: #00a33e;
 }
@@ -254,7 +265,7 @@ color: rgb(255, 255, 255);
 
     display: flex;
     background-color: rgb(0, 0, 0);
-    width: 80%;
+    width: 60%;
     height: 70%;
     flex-direction: column;
     align-items: center;
@@ -368,7 +379,7 @@ color: rgb(255, 255, 255);
 </style>
 
 <script setup>
-import { ref,  onMounted} from 'vue'
+import { ref} from 'vue'
 
 const modoAtual = ref('menu');
 const titleMedico = ref("Cadastro Médico");
@@ -385,7 +396,6 @@ const crm = ref('')
 const especialidade = ref('')
 const telefone = ref('')
 const email = ref('')
-
 
 
 
@@ -408,7 +418,18 @@ function voltarFormInicial(){
 
 }
 
+function excluirMedico(index) {
 
+    modoAtual.value = 'listagem';
+ 
+
+    medicos.value.splice(index, 1); 
+
+    modoAtual.value = 'listagem'
+  
+
+
+}
 
 function cancelar(){
   limparCampos()
@@ -445,17 +466,28 @@ function listarMedicos(){
 
 }
 function editarMedico(index) {
-  modoAtual.value = 'listagem';  
+
   const medico = medicos.value[index];
-  
   nome.value = medico.nome;
   crm.value = medico.crm;
   especialidade.value = medico.especialidade;
   telefone.value = medico.telefone;
   email.value = medico.email;
-  indiceEdicao.value = index;  
-  titleMedico.value = 'Editar Médico';  
-  
+  indiceEdicao.value = index;
+  titleMedico.value = "Editar Médico";
+  modoAtual.value = 'cadastro'; 
+}
+
+
+function buscarMédicos(){
+  for(let i =0; i < medicos.value.length;i++){
+    const medico = medicos.value[i];
+    const nome = medico.nome.toLocaleLowerCase;
+    if(nome ){
+
+    }
+
+  }
 }
 
 
