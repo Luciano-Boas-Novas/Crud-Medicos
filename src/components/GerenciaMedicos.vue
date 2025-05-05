@@ -1,98 +1,135 @@
+'
 <template>
-    <section>
-        <div class="crud-container">
-            <div class="crud-box">
-                <div class="doctor-content">
-                    <div  class="form-wrapper" v-if="modoAtual === 'cadastro' || modoAtual === 'menu' || modoAtual === 'listagem'">
-                        <div v-if="modoAtual === 'cadastro'" class="form-content">
-                            
+  <section>
+    <div class="crud-container">
+      <div class="crud-box">
+        <div class="doctor-content">
+          <div
+            class="form-wrapper"
+            v-if="
+              modoAtual === 'cadastro' ||
+              modoAtual === 'menu' ||
+              modoAtual === 'listagem'
+            "
+          >
+            <div v-if="modoAtual === 'cadastro'" class="form-content">
+              <div class="form-header">
+                <h1>{{ titleMedico }}</h1>
+              </div>
+              <div class="form-voltar">
+                <button @click="voltarFormInicial" class="btn-voltar">
+                  voltar
+                </button>
+              </div>
 
-                        <div class="form-header">
-                            <h1>{{ titleMedico }}</h1>
-                            
-                           
+              <div class="form-fields">
+                <input type="text" v-model="nome" placeholder="Nome Médico" />
+                <input type="text" v-model="crm" placeholder="CRM" />
+                <input
+                  type="text"
+                  v-model="especialidade"
+                  placeholder="Especialidade"
+                />
+                <input type="text" v-model="status" placeholder="Status" />
+                <input type="email" v-model="email" placeholder="Email" />
+              </div>
+              <!-- form-fields Campos do formulário médico -->
+              <div class="form-actions">
+                <button v-on:click="salvar">Salvar</button>
+                <button v-on:click="cancelar">Cancelar</button>
+              </div>
+              <!-- form-actions -->
+            </div>
+            <!--form-content-->
+            <div v-if="modoAtual === 'menu'" class="opcoes-usuario">
+              <h2>Gerenciar Médicos</h2>
+              <button @click="exibirCadastro">Cadastrar Médico</button>
+              <button @click="listarMedicos">Listar Médicos</button>
+              <button @click="editarMedico(index)">Editar Médico</button>
+              <button @click="excluirMedico">Excluir Médico</button>
+            </div>
+            <!--opçoes de usuario-->
+            <div v-else-if="modoAtual === 'listagem'" class="list-content">
+              <!-- Cabeçalho da listagem de médicos -->
+              <div class="form-header">
+                <h1>Lista de Médicos</h1>
+              </div>
+              <!-- Fim da form-header -->
+              <!-- Botão para voltar ao menu inicial -->
+              <div class="form-voltar">
+                <button @click="voltarFormInicial" class="btn-voltar">
+                  Voltar
+                </button>
+              </div>
+              <!-- Fim da form-voltar -->
+              <!-- Lista dos médicos -->
+              <div class="list-scroll">
+                <div
+                  v-for="(medico, index) in medicos"
+                  :key="index"
+                  class="medico-card"
+                >
+                  <p :class="{ done: medico.status === 'inativo' }">
+                    Nome: {{ medico.nome }}
+                  </p>
+                  <p :class="{ done: medico.status === 'inativo' }">
+                    CRM: {{ medico.crm }}
+                  </p>
+                  <p :class="{ done: medico.status === 'inativo' }">
+                    Especialidade: {{ medico.especialidade }}
+                  </p>
+                  <p :class="{ done: medico.status === 'inativo' }">
+                    Status: {{ medico.status }}
+                  </p>
+                  <p :class="{ done: medico.status === 'inativo' }">
+                    Email: {{ medico.email }}
+                  </p>
 
-                        </div>
-                        <div class="form-voltar">
-                            <button @click="voltarFormInicial"class="btn-voltar">voltar</button>
-                         </div>
+                  <!-- Condicional para ativar o médico, caso o status seja 'inativo' -->
+                  <button
+                    v-if="medico.status === 'inativo'"
+                    class="btn-editar"
+                    @click="ativarMedico(index)"
+                  >
+                    Ativar
+                  </button>
 
-                        <div class="search-bar">
-                            
-                        </div><!-- search-bar -->
-
-                        <div  class="form-fields">
-                        <input type="text" v-model="nome" placeholder="Nome Médico"/>
-                        <input type="text" v-model="crm" placeholder="CRM" />
-                        <input type="text" v-model="especialidade" placeholder="Especialidade" />
-                        <input type="tel" v-model="telefone" placeholder="Telefone" />
-                        <input type="email" v-model="email" placeholder="Email" /> 
-                         </div><!-- form-fields Campos do formulário médico -->
-                         <div class="form-actions">
-                            <button v-on:click="salvar">Salvar</button>
-                            <button v-on:click="cancelar">Cancelar</button>     
-                        </div><!-- form-actions -->
-                        </div><!--form-content-->
-                        <div v-if="modoAtual === 'menu'" class="opcoes-usuario">
-                            <h2>Gerenciar Médicos</h2>
-                            <button @click="exibirCadastro">Cadastrar Médico</button>
-                            <button :class="OcultoForm"@click="listarMedicos">Listar Médicos</button>
-                            <button @click="editarMedico">Editar Médico</button>
-                            <button @click="excluirMedico">Excluir Médico</button>
-                        </div><!--opçoes de usuario-->
-                        <div v-else-if="modoAtual === 'listagem'" class="list-content">
-                          <!-- Cabeçalho da listagem de médicos -->
-                          <div class="form-header">
-                            <h1>Lista de Médicos</h1>
-                          </div> <!-- Fim da form-header -->
-                          <!-- Botão para voltar ao menu inicial -->
-                          <div class="form-voltar">
-                            <button @click="voltarFormInicial" class="btn-voltar">
-                              Voltar
-                            </button>
-                          </div> <!-- Fim da form-voltar -->
-                          <!-- Lista dos médicos -->
-                          <div class="list-scroll">
-                            <div
-                              v-for="(medico, index) in medicos"
-                              :key="index"
-                              class="medico-card"
-                            >
-                              <p>Nome: {{ medico.nome }}</p>
-                              <p>CRM: {{ medico.crm }}</p>
-                              <p>Especialidade: {{ medico.especialidade }}</p>
-                              <p>Telefone: {{ medico.telefone }}</p>
-                              <p>Email: {{ medico.email }}</p>
-                            </div>
-                          </div> <!-- Fim da list-scroll -->
-                        </div> <!-- Fim da list-content -->
-            
-                        
-                    </div><!-- form-wrapper -->
-                </div><!-- doctor-content -->
-
-              
-            </div><!-- crud-box -->
-        
-        </div> <!-- crud-container -->
-    </section>
-    
+                  <div class="buttons-actions">
+                    <button class="btn-editar" @click="editarMedico(index)">
+                      Editar
+                    </button>
+                    <button class="btn-editar" @click="excluirMedico(index)">
+                      Excluir
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Fim da list-scroll -->
+            </div>
+            <!-- Fim da list-content -->
+          </div>
+          <!-- form-wrapper -->
+        </div>
+        <!-- doctor-content -->
+      </div>
+      <!-- crud-box -->
+    </div>
+    <!-- crud-container -->
+  </section>
 </template>
 
 <style scoped>
-
-
 .crud-container {
-    display: flex;
-    background-color: black;
-    width: 198vh;
-    height: 200vh;
-    justify-content: center;
-    align-items: flex-start;
+  display: flex;
+  background-color: black;
+  width: 198vh;
+  height: 200vh;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .crud-box {
-    margin-top: 200px;
+  margin-top: 200px;
   display: flex;
   background-color: aliceblue;
   height: 1400px;
@@ -103,16 +140,16 @@
 }
 
 .doctor-content {
-    display: flex;
-    background-color: cadetblue;
-    width: 1200px;
-    height: 1000px;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  background-color: cadetblue;
+  width: 1200px;
+  height: 1000px;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-wrapper {
-    display: flex;
+  display: flex;
   flex-direction: column;
   background-color: white;
   width: 60%;
@@ -124,7 +161,7 @@
 }
 
 .form-header {
-    display: flex;
+  display: flex;
   background-color: #1c8c42;
   width: 100%;
   height: 13%;
@@ -132,7 +169,6 @@
   align-items: center;
   border-radius: 12px;
 }
-
 
 /* .form-actions {
     display: flex;
@@ -154,22 +190,26 @@
 
 .form-actions {
   display: flex;
-
-  
   justify-content: center;
   align-items: center;
-  width: 462px;
+  width: 340px;
   height: 80px;
 }
 
 .form-actions button {
-  height: 60%;
-  width: 60%;
-  border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  color: white;
+  width: 80%;
+  height: 80%;
+  padding: 10px 20px;
+  border: 5px solid;
+
+  border-radius: 7px;
+  box-shadow: 1px 1px 4px rgb(10, 4, 4);
   background-color: #1c8c42;
+  position: relative;
+
+  color: rgb(255, 255, 255);
   transition: background-color 0.3s ease;
 }
 .opcoes-usuario {
@@ -177,7 +217,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+  width: 300px;
+  height: 400px;
   background-color: #1c8c42;
   color: white;
   padding: 40px;
@@ -188,20 +229,26 @@
 
 .opcoes-usuario h2 {
   font-size: 24px;
+
   color: #ffe;
 }
 
 .opcoes-usuario button {
-  padding: 12px 30px;
-  font-size: 18px;
-  border-radius: 10px;
-  border: none;
+  display: flex;
+  font-size: 16px;
   cursor: pointer;
-  background-color: #ffffff;
-  color: rgb(0, 0, 0);
-  transition: background-color 0.3s;
+  width: 63%;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 14px;
+  border: 4px solid;
+  border-radius: 6px;
+  box-shadow: 1px 1px 4px rgb(10, 4, 4);
+  background-color: #02cb46;
+  position: relative;
+  color: rgb(255, 255, 255);
+  transition: background-color 0.3s ease;
 }
-
 .opcoes-usuario button:hover {
   background-color: #00a33e;
 }
@@ -212,26 +259,17 @@
   border: 1px solid #ccc;
   font-size: 16px;
 }
-.search-bar{
-    display: flex;
-    background-color: rgb(0, 0, 0);
-    width: 80%;
-    height: 7%;
-    align-items: center;
-    justify-content: center;
-   
-}
 
-.form-fields{
-    display: flex;
-    background-color: rgb(255, 255, 255);
-    width: 80%;
-    height: 70%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 10px;
-    border-radius: 17px;
+.form-fields {
+  display: flex;
+  background-color: rgb(255, 255, 255);
+  width: 80%;
+  height: 70%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px;
+  border-radius: 17px;
 }
 .form-fields {
   display: flex;
@@ -240,34 +278,29 @@
   width: 80%;
 }
 
-.form-content{
-
-    display: flex;
-    background-color: rgb(0, 0, 0);
-    width: 80%;
-    height: 70%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 10px;
-    border-radius: 17px;
-
-
+.form-content {
+  display: flex;
+  background-color: rgb(0, 0, 0);
+  width: 60%;
+  height: 70%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px;
+  border-radius: 17px;
 }
 
 .form-actions button:hover {
   background-color: #00e990;
 }
 
-
 h1 {
-    color: antiquewhite;
-    font-size: 28px;
+  color: antiquewhite;
+  font-size: 28px;
 }
 
 .list-medicos {
-  
-    display: flex;
+  display: flex;
   flex-direction: column;
   background-color: white;
   width: 60%;
@@ -276,35 +309,35 @@ h1 {
   justify-content: space-around;
   align-items: center;
   padding: 20px;
-    
 }
 
-.list-content{
-
-
-    display: flex;
-    background-color: black;
-    width: 80%;
-    height: 70%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    gap: 10px;
-    border-radius: 17px;
+.list-content {
+  display: flex;
+  background-color: black;
+  width: 80%;
+  height: 70%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 17px;
 }
-.form-voltar{
-    display: flex;
-    background-color: #ffe;
-    width: 160px;
-    height: 40px;
-    justify-content: center;
-    align-items: center;
+.form-voltar {
+  display: flex;
+
+  width: 420px;
+  height: 66.27px;
+  justify-content: end;
+  align-items: flex-end;
 }
 .btn-voltar {
-    padding: 12px 60px;
+  display: flex;
+  align-self: center;
+  justify-self: end;
+  padding: 10px 10px;
   font-size: 18px;
   border-radius: 10px;
-  border: none;
+  border: solid #ffffff 5px;
   cursor: pointer;
   background-color: #1c8c42;
   color: white;
@@ -330,72 +363,133 @@ h1 {
   border-radius: 10px;
 }
 
+.buttons-actions {
+  display: flex;
+  gap: 15px;
+  padding: 10px 20px;
+  justify-content: center;
+  align-items: center;
+}
 
+.done {
+  text-decoration: line-through;
+}
+.btn-editar {
+  display: flex;
+  justify-self: center;
+  text-align: center;
+  align-self: center;
+  width: 60%;
+  height: 60%;
+  padding: 10px 20px;
+  border: 5px solid;
+  cursor: pointer;
+  border-radius: 7px;
+  box-shadow: 1px 1px 4px rgb(10, 4, 4);
+  background-color: #1c8c42;
+  position: relative;
+
+  color: rgb(255, 255, 255);
+}
 </style>
 
 <script setup>
-import { ref,  onMounted} from 'vue'
+import { ref } from 'vue';
 
+const modoAtual = ref('menu');
+const titleMedico = ref('Cadastro Médico');
+const indiceEdicao = ref(null);
+const medicos = ref([
+  {
+    nome: 'Dr. João',
+    crm: '123',
+    especialidade: 'Cardiologia',
+    status: 'inativo',
+    email: 'joao@example.com',
+  },
+  {
+    nome: 'Dra. Maria',
+    crm: '124',
+    especialidade: 'Neurologia',
+    status: 'Ativo',
+    email: 'maria@example.com',
+  },
+]);
 
-const modoAtual = ref('menu')
-const titleMedico = ref("Cadastro Médico")
-
-function exibirCadastro(){
-  titleMedico.value = "Cadastro Médico"
-   modoAtual.value = 'cadastro'
-}
+const nome = ref('');
+const crm = ref('');
+const especialidade = ref('');
+const status = ref('');
+const email = ref('');
 
 function limparCampos() {
-  nome.value = ''
-  crm.value = ''
-  especialidade.value = ''
-  telefone.value = ''
-  email.value = ''
+  nome.value = '';
+  crm.value = '';
+  especialidade.value = '';
+  status.value = '';
+  email.value = '';
 }
 
-const medicos = ref([])
-
-const nome = ref('')
-const crm = ref('')
-const especialidade = ref('')
-const telefone = ref('')
-const email = ref('')
-
-function voltarFormInicial(){
-    modoAtual.value = 'menu'
-    limparCampos()
-
+function exibirCadastro() {
+  modoAtual.value = 'cadastro';
 }
 
-
-function cancelar(){
-  limparCampos()
+function voltarFormInicial() {
+  modoAtual.value = 'menu';
+  limparCampos();
 }
-function salvar(){
 
+function excluirMedico(index) {
+  modoAtual.value = 'listagem';
+
+  medicos.value.splice(index, 1);
+
+  modoAtual.value = 'listagem';
+}
+
+function cancelar() {
+  limparCampos();
+}
+function salvar() {
+  if (indiceEdicao.value !== null) {
+    medicos.value[indiceEdicao.value] = {
+      nome: nome.value,
+      crm: crm.value,
+      especialidade: especialidade.value,
+      status: status.value,
+      email: email.value,
+    };
+  } else {
     medicos.value.push({
-        nome: nome.value,
-        crm: crm.value,
-        especialidade: especialidade.value,
-        telefone: telefone.value,
-        email: email.value
-        
-        
-    })
-    limparCampos()
-
- 
+      nome: nome.value,
+      crm: crm.value,
+      especialidade: especialidade.value,
+      status: status.value,
+      email: email.value,
+    });
+  }
+  limparCampos();
+  modoAtual.value = 'menu';
 }
 
-function listarMedicos(){
-  modoAtual.value = 'listagem'
-
-
+function listarMedicos() {
+  modoAtual.value = 'listagem';
+}
+function editarMedico(index) {
+  modoAtual.value = 'listagem';
+  const medico = medicos.value[index];
+  nome.value = medico.nome;
+  crm.value = medico.crm;
+  especialidade.value = medico.especialidade;
+  status.value = medico.status;
+  email.value = medico.email;
+  indiceEdicao.value = index;
+  titleMedico.value = 'Editar Médico';
 }
 
-
-
-
-
+function ativarMedico(index) {
+  medicos.value[index].status = 'Ativo';
+}
 </script>
 
+'
